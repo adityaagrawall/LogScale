@@ -6,8 +6,9 @@ node_modules/
 .next/
 out/
 
-# NestJS build outputs
+# NestJS build outputs - except backend dist (committed for Render deploy)
 dist/
+!apps/backend/dist/
 
 # Environment variables
 .env
