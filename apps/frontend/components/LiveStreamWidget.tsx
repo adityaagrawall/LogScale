@@ -114,7 +114,7 @@ export const LiveStreamWidget: React.FC<LiveStreamWidgetProps> = ({ apiKey }) =>
                 transition={{ duration: 0.25 }}
                 className="flex items-center gap-3 py-1.5 px-2.5 rounded-lg bg-slate-900/60 border border-slate-800/50 hover:bg-slate-800/80 transition-colors"
               >
-                <span className="text-slate-500 text-[11px] font-mono shrink-0">{ev.timestamp}</span>
+                <span className="text-slate-500 text-[11px] font-mono shrink-0" suppressHydrationWarning>{ev.timestamp}</span>
                 <span
                   className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold shrink-0 ${
                     ev.type === 'raw_event'

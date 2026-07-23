@@ -18,6 +18,11 @@ export const LogExplorerWidget: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | '2XX' | '4XX' | '5XX'>('ALL');
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const mockLogs: LogEntry[] = [
     {
@@ -26,7 +31,7 @@ export const LogExplorerWidget: React.FC = () => {
       endpoint: '/api/v1/cart/checkout',
       statusCode: 200,
       durationMs: 184.2,
-      timestamp: new Date().toLocaleTimeString(),
+      timestamp: '01:04:12 AM',
       meta: { region: 'us-east-1', instance: 'i-09812a', dbQueryMs: 42.1 },
     },
     {
@@ -35,7 +40,7 @@ export const LogExplorerWidget: React.FC = () => {
       endpoint: '/api/v1/payments/charge',
       statusCode: 500,
       durationMs: 842.0,
-      timestamp: new Date(Date.now() - 15000).toLocaleTimeString(),
+      timestamp: '01:03:57 AM',
       meta: { region: 'us-east-1', error: 'Payment gateway timeout', gatewayCode: 'GW_504' },
     },
     {
@@ -44,7 +49,7 @@ export const LogExplorerWidget: React.FC = () => {
       endpoint: '/api/v1/auth/login',
       statusCode: 200,
       durationMs: 38.5,
-      timestamp: new Date(Date.now() - 32000).toLocaleTimeString(),
+      timestamp: '01:03:40 AM',
       meta: { region: 'us-west-2', authMethod: 'jwt_bearer' },
     },
     {
@@ -53,7 +58,7 @@ export const LogExplorerWidget: React.FC = () => {
       endpoint: '/api/v1/cart/apply-coupon',
       statusCode: 400,
       durationMs: 65.0,
-      timestamp: new Date(Date.now() - 48000).toLocaleTimeString(),
+      timestamp: '01:03:24 AM',
       meta: { region: 'us-east-1', couponCode: 'EXPIRED_2026', reason: 'Invalid coupon' },
     },
     {
@@ -62,7 +67,7 @@ export const LogExplorerWidget: React.FC = () => {
       endpoint: '/api/v1/payments/refund',
       statusCode: 200,
       durationMs: 312.4,
-      timestamp: new Date(Date.now() - 65000).toLocaleTimeString(),
+      timestamp: '01:03:07 AM',
       meta: { region: 'us-east-1', refundAmount: 99.99 },
     },
   ];
@@ -175,7 +180,7 @@ export const LogExplorerWidget: React.FC = () => {
                       <Clock className="w-3 h-3 text-slate-400" />
                       {log.durationMs}ms
                     </span>
-                    <span className="text-slate-400">{log.timestamp}</span>
+                    <span className="text-slate-400" suppressHydrationWarning>{log.timestamp}</span>
                   </div>
                 </div>
 
