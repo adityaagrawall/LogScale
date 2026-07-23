@@ -9,12 +9,14 @@ import { LatencyWidget } from '../components/LatencyWidget';
 import { LiveStreamWidget } from '../components/LiveStreamWidget';
 import { LogExplorerWidget } from '../components/LogExplorerWidget';
 import { ErrorBudgetWidget } from '../components/ErrorBudgetWidget';
+import { IntegrationModal } from '../components/IntegrationModal';
 import { FunnelStepResult, CohortMatrixCell, SystemLatencyPercentiles } from '../types';
-import { Send, Zap, Activity, RefreshCw, Sparkles, Layers, ArrowUpRight } from 'lucide-react';
+import { Send, Zap, Activity, RefreshCw, Sparkles, Code2, HelpCircle } from 'lucide-react';
 
 export default function DashboardPage() {
   const [apiKey, setApiKey] = useState('lx_live_demo1234567890abcdef1234567890');
   const [initialLoading, setInitialLoading] = useState(true);
+  const [isIntegrationOpen, setIsIntegrationOpen] = useState(false);
 
   const [funnelData, setFunnelData] = useState<FunnelStepResult[]>([]);
   const [cohortData, setCohortData] = useState<CohortMatrixCell[]>([]);
@@ -107,7 +109,6 @@ export default function DashboardPage() {
       const userId = `user_funnel_${Math.floor(Math.random() * 9000 + 1000)}`;
       const userTime = new Date(baseTime + i * 100).toISOString();
 
-      // Step 0: page_view
       simulatedEvents.push({
         eventName: 'page_view',
         userId,
@@ -115,7 +116,6 @@ export default function DashboardPage() {
         timestamp: userTime,
       });
 
-      // Step 1: add_to_cart (75% conversion)
       if (Math.random() < 0.75) {
         const step1Time = new Date(baseTime + i * 100 + 1000).toISOString();
         simulatedEvents.push({
@@ -125,7 +125,6 @@ export default function DashboardPage() {
           timestamp: step1Time,
         });
 
-        // Step 2: checkout_started (70% conversion)
         if (Math.random() < 0.70) {
           const step2Time = new Date(baseTime + i * 100 + 2000).toISOString();
           simulatedEvents.push({
@@ -135,7 +134,6 @@ export default function DashboardPage() {
             timestamp: step2Time,
           });
 
-          // Step 3: payment_completed (70% conversion)
           if (Math.random() < 0.70) {
             const step3Time = new Date(baseTime + i * 100 + 3000).toISOString();
             simulatedEvents.push({
@@ -205,10 +203,14 @@ export default function DashboardPage() {
       <div className="ambient-glow-purple top-[400px] right-[5%]" />
       <div className="ambient-glow-emerald bottom-[200px] left-[5%]" />
 
-      <Navbar apiKey={apiKey} setApiKey={setApiKey} />
+      <Navbar 
+        apiKey={apiKey} 
+        setApiKey={setApiKey} 
+        onOpenIntegration={() => setIsIntegrationOpen(true)}
+      />
 
       <main className="max-w-7xl mx-auto px-4 lg:px-8 pt-8 space-y-6 relative z-10">
-        {/* Top Control Banner with Modern Glass Styling */}
+        {/* Top Control Banner */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -233,22 +235,22 @@ export default function DashboardPage() {
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
+              onClick={() => setIsIntegrationOpen(true)}
+              className="flex-1 lg:flex-none flex items-center justify-center gap-2 text-xs font-bold px-4 py-3 rounded-2xl bg-white hover:bg-slate-50 text-indigo-700 border border-indigo-200 shadow-sm transition-all"
+            >
+              <Code2 className="w-4 h-4 text-indigo-600" />
+              Integration Guide
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={handleSimulateIngest}
               disabled={simulating}
               className="flex-1 lg:flex-none flex items-center justify-center gap-2 text-xs font-bold px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/25 transition-all disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
               {simulating ? 'Enqueueing Events...' : 'Simulate Live Event Ingestion (<20ms)'}
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={refreshAll}
-              className="flex items-center justify-center gap-2 text-xs font-bold px-4 py-3 rounded-2xl bg-white/90 hover:bg-white text-slate-700 border border-slate-200/90 shadow-sm transition-all"
-            >
-              <RefreshCw className="w-4 h-4 text-indigo-600" />
-              Refresh Analytics
             </motion.button>
           </div>
         </motion.div>
@@ -291,6 +293,37 @@ export default function DashboardPage() {
         {/* Advanced Log Explorer & JSON Inspector */}
         <LogExplorerWidget />
       </main>
+
+      {/* Floating Action Button (FAB) for Instant Developer Integration Guide */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.6 }}
+        className="fixed bottom-6 right-6 z-40"
+      >
+        <motion.button
+          whileHover={{ scale: 1.08, y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setIsIntegrationOpen(true)}
+          className="flex items-center gap-2.5 px-5 py-3.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold text-xs shadow-xl shadow-indigo-500/30 border border-white/20 group relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+          <Code2 className="w-4 h-4 fill-current relative z-10" />
+          <span className="relative z-10">Connect Your Website</span>
+          <span className="relative z-10 flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+          </span>
+        </motion.button>
+      </motion.div>
+
+      {/* Integration Guide Modal */}
+      <IntegrationModal
+        isOpen={isIntegrationOpen}
+        onClose={() => setIsIntegrationOpen(false)}
+        apiKey={apiKey}
+        backendUrl={backendUrl}
+      />
     </div>
   );
 }

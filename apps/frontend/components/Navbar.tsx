@@ -2,14 +2,15 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, ShieldCheck, Sparkles, Activity, CheckCircle2 } from 'lucide-react';
+import { Zap, ShieldCheck, Sparkles, Code2 } from 'lucide-react';
 
 interface NavbarProps {
   apiKey: string;
   setApiKey: (key: string) => void;
+  onOpenIntegration?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ apiKey, setApiKey }) => {
+export const Navbar: React.FC<NavbarProps> = ({ apiKey, setApiKey, onOpenIntegration }) => {
   return (
     <motion.header 
       initial={{ y: -20, opacity: 0 }}
@@ -45,8 +46,21 @@ export const Navbar: React.FC<NavbarProps> = ({ apiKey, setApiKey }) => {
           </div>
         </div>
 
-        {/* Status Indicators & Security */}
-        <div className="flex items-center gap-3.5">
+        {/* Status Indicators, Integration Guide & Security */}
+        <div className="flex items-center gap-3">
+          {/* Integration Hub Button */}
+          {onOpenIntegration && (
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={onOpenIntegration}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 border border-indigo-200/90 text-indigo-700 text-xs font-bold shadow-xs transition-all"
+            >
+              <Code2 className="w-3.5 h-3.5 text-indigo-600" />
+              <span>Connect Your Site</span>
+            </motion.button>
+          )}
+
           {/* Security Key Badge */}
           <div className="hidden sm:flex items-center gap-2 bg-slate-50/90 hover:bg-white border border-slate-200/80 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all rounded-xl px-3.5 py-1.5 shadow-xs">
             <ShieldCheck className="w-4 h-4 text-indigo-600" />
@@ -55,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({ apiKey, setApiKey }) => {
               type="password"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              className="bg-transparent text-slate-800 font-mono focus:outline-none w-36 text-xs font-semibold tracking-wider"
+              className="bg-transparent text-slate-800 font-mono focus:outline-none w-32 text-xs font-semibold tracking-wider"
               placeholder="lx_live_..."
             />
           </div>
@@ -63,13 +77,13 @@ export const Navbar: React.FC<NavbarProps> = ({ apiKey, setApiKey }) => {
           {/* Real-time Status Badge */}
           <motion.div 
             whileHover={{ scale: 1.03 }}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 text-emerald-700 text-xs font-bold shadow-xs"
+            className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200/80 text-emerald-700 text-xs font-bold shadow-xs"
           >
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
             </span>
-            <span className="hidden md:inline">Ingestion Pipeline</span>
+            <span>Ingestion Pipeline</span>
             <span className="text-emerald-600 font-extrabold uppercase text-[10px] tracking-wider bg-emerald-100 px-1.5 py-0.5 rounded">Active</span>
           </motion.div>
         </div>
