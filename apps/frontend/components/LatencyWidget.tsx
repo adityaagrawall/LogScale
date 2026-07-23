@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SystemLatencyPercentiles } from '@telemetryx/shared';
+import { SystemLatencyPercentiles } from '../types';
 import { Activity, Server, AlertTriangle, CheckCircle2 } from 'lucide-react';
 
 interface LatencyWidgetProps {

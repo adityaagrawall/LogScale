@@ -8,7 +8,7 @@ import { LatencyWidget } from '../components/LatencyWidget';
 import { LiveStreamWidget } from '../components/LiveStreamWidget';
 import { LogExplorerWidget } from '../components/LogExplorerWidget';
 import { ErrorBudgetWidget } from '../components/ErrorBudgetWidget';
-import { FunnelStepResult, CohortMatrixCell, SystemLatencyPercentiles } from '@telemetryx/shared';
+import { FunnelStepResult, CohortMatrixCell, SystemLatencyPercentiles } from '../types';
 import { Send, Zap, Activity, RefreshCw, Loader2, Sparkles } from 'lucide-react';
 
 export default function DashboardPage() {

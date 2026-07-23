@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FunnelStepResult } from '@telemetryx/shared';
+import { FunnelStepResult } from '../types';
 import { Users, TrendingDown, RefreshCw } from 'lucide-react';
 
 interface FunnelChartProps {

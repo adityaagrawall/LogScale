@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CohortMatrixCell } from '@telemetryx/shared';
+import { CohortMatrixCell } from '../types';
 import { Grid, Calendar } from 'lucide-react';
 
 interface CohortHeatmapProps {
