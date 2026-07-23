@@ -1,0 +1,92 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Organization {
+  id            String           @id @default(uuid())
+  name          String
+  slug          String           @unique
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  apiKeys       ApiKey[]
+  rawEvents     RawEvent[]
+  telemetryLogs TelemetryLog[]
+  dailyAggs     DailyAggregate[]
+
+  @@map("organizations")
+}
+
+model ApiKey {
+  id           String       @id @default(uuid())
+  orgId        String       @map("org_id")
+  name         String
+  keyHash      String       @unique @map("key_hash")
+  keyPrefix    String       @map("key_prefix")
+  revoked      Boolean      @default(false)
+  createdAt    DateTime     @default(now()) @map("created_at")
+  lastUsedAt   DateTime?    @map("last_used_at")
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([keyHash])
+  @@index([orgId])
+  @@map("api_keys")
+}
+
+model RawEvent {
+  id         String   @id @default(uuid())
+  orgId      String   @map("org_id")
+  eventName  String   @map("event_name")
+  userId     String   @map("user_id")
+  properties Json     @default("{}")
+  timestamp  DateTime @default(now())
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  // Compound time-series indexes for ultra-fast query execution
+  @@index([orgId, timestamp(sort: Desc)])
+  @@index([orgId, eventName, timestamp(sort: Desc)])
+  @@index([orgId, userId, timestamp(sort: Desc)])
+  @@map("raw_events")
+}
+
+model TelemetryLog {
+  id          String   @id @default(uuid())
+  orgId       String   @map("org_id")
+  serviceName String   @map("service_name")
+  endpoint    String
+  statusCode  Int      @map("status_code")
+  durationMs  Float    @map("duration_ms")
+  meta        Json?    @default("{}")
+  timestamp   DateTime @default(now())
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  // Time-series indexing strategies for dynamic latency percentiles & error rate rollups
+  @@index([orgId, timestamp(sort: Desc)])
+  @@index([orgId, serviceName, timestamp(sort: Desc)])
+  @@index([orgId, statusCode, timestamp(sort: Desc)])
+  @@map("telemetry_logs")
+}
+
+model DailyAggregate {
+  id           String   @id @default(uuid())
+  orgId        String   @map("org_id")
+  date         DateTime @db.Date
+  metricType   String   @map("metric_type") // e.g. 'event_count', 'telemetry_p95', 'cohort_retention'
+  dimensionKey String?  @map("dimension_key") // e.g. event_name or service endpoint
+  metrics      Json     // Pre-calculated roll-up payload (p50, p95, p99, active users, dropoffs)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, date, metricType, dimensionKey])
+  @@index([orgId, date(sort: Desc)])
+  @@map("daily_aggregates")
+}
