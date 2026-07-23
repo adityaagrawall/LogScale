@@ -6,6 +6,7 @@
 
 A production-grade, non-blocking telemetry engine built for ultra-fast event ingestion (<20ms), dynamic Redis queue batching, complex analytical SQL windowing, and real-time dashboard observability.
 
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live_Demo-000000?style=for-the-badge&logo=vercel)](https://loggscale.vercel.app)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![NestJS](https://img.shields.io/badge/NestJS-10.3-red?style=for-the-badge&logo=nestjs)](https://nestjs.com/)
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.0-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
@@ -13,6 +14,8 @@ A production-grade, non-blocking telemetry engine built for ultra-fast event ing
 [![Redis](https://img.shields.io/badge/Redis-7.0-DC382D?style=for-the-badge&logo=redis)](https://redis.io/)
 [![BullMQ](https://img.shields.io/badge/BullMQ-5.12-orange?style=for-the-badge&logo=bull)](https://bullmq.io/)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com/)
+
+**🌐 Live Dashboard**: [https://loggscale.vercel.app](https://loggscale.vercel.app)
 
 ---
 
