@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { IngestPayloadSchema, IngestPayload, IngestionResponse } from '@telemetryx/shared';
+import { IngestPayloadSchema, IngestPayload, IngestionResponse } from '../../shared';
 import { Subject } from 'rxjs';
 
 export interface StreamEvent {
