@@ -25,7 +25,7 @@ export default function DashboardPage() {
   const [simulating, setSimulating] = useState(false);
   const [simulationStatus, setSimulationStatus] = useState<string | null>(null);
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://logscale-backend.onrender.com';
 
   // Fetch Funnel Data
   const fetchFunnel = useCallback(async () => {

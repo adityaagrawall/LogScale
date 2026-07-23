@@ -21,7 +21,7 @@ export const LiveStreamWidget: React.FC<LiveStreamWidgetProps> = ({ apiKey }) =>
   useEffect(() => {
     if (!isLive || !apiKey) return;
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://logscale-backend.onrender.com';
     const eventSource = new EventSource(
       `${backendUrl}/api/v1/stream/live?apiKey=${encodeURIComponent(apiKey)}`
     );
