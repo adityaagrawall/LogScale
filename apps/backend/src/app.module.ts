@@ -9,19 +9,50 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { CronModule } from './modules/cron/cron.module';
 import { StreamModule } from './modules/stream/stream.module';
 
+function getRedisConnection() {
+  // Support REDIS_URL (rediss:// or redis://) as a single env var
+  if (process.env.REDIS_URL) {
+    const url = process.env.REDIS_URL;
+    const isTls = url.startsWith('rediss://');
+    return {
+      ...(isTls ? { url } : { url }),
+      maxRetriesPerRequest: null,
+      enableOfflineQueue: false,
+      lazyConnect: true,
+      retryStrategy: (times: number) => {
+        if (times > 3) return null; // stop retrying after 3 attempts
+        return Math.min(times * 200, 2000);
+      },
+      tls: isTls ? { rejectUnauthorized: false } : undefined,
+    } as any;
+  }
+
+  const host = process.env.REDIS_HOST || 'localhost';
+  const port = parseInt(process.env.REDIS_PORT || '6379', 10);
+  const password = process.env.REDIS_PASSWORD || undefined;
+  const isTls =
+    host.includes('upstash.io') || process.env.REDIS_TLS === 'true';
+
+  return {
+    host,
+    port,
+    password,
+    maxRetriesPerRequest: null,
+    enableOfflineQueue: false,
+    lazyConnect: true,
+    retryStrategy: (times: number) => {
+      if (times > 3) return null;
+      return Math.min(times * 200, 2000);
+    },
+    tls: isTls ? { rejectUnauthorized: false } : undefined,
+  };
+}
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     BullModule.forRoot({
-      connection: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379', 10),
-        password: process.env.REDIS_PASSWORD || undefined,
-        maxRetriesPerRequest: null,
-        tls: (process.env.REDIS_HOST && process.env.REDIS_HOST.includes('upstash.io')) || process.env.REDIS_TLS === 'true'
-          ? { rejectUnauthorized: false }
-          : undefined,
-      },
+      connection: getRedisConnection(),
     }),
     AuthModule,
     IngestionModule,

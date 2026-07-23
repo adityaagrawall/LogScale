@@ -10,3 +10,15 @@ services:
         value: production
       - key: PORT
         value: 3001
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_MwQfyDVYU4I1@ep-ancient-boat-azqq43ji-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - key: REDIS_URL
+        value: rediss://default:gQAAAAAAAqhUAAIgcDJiNzJlM2RiZWJmNDM0NzliYTY5NzBlNTIyN2Y5ZTVlNw@honest-polliwog-174164.upstash.io:6379
+      - key: REDIS_HOST
+        value: honest-polliwog-174164.upstash.io
+      - key: REDIS_PORT
+        value: 6379
+      - key: REDIS_PASSWORD
+        value: gQAAAAAAAqhUAAIgcDJiNzJlM2RiZWJmNDM0NzliYTY5NzBlNTIyN2Y5ZTVlNw
+      - key: REDIS_TLS
+        value: true
