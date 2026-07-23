@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '../components/Navbar';
 import { FunnelChart } from '../components/FunnelChart';
 import { CohortHeatmap } from '../components/CohortHeatmap';
@@ -9,7 +10,7 @@ import { LiveStreamWidget } from '../components/LiveStreamWidget';
 import { LogExplorerWidget } from '../components/LogExplorerWidget';
 import { ErrorBudgetWidget } from '../components/ErrorBudgetWidget';
 import { FunnelStepResult, CohortMatrixCell, SystemLatencyPercentiles } from '../types';
-import { Send, Zap, Activity, RefreshCw, Loader2, Sparkles } from 'lucide-react';
+import { Send, Zap, Activity, RefreshCw, Sparkles, Layers, ArrowUpRight } from 'lucide-react';
 
 export default function DashboardPage() {
   const [apiKey, setApiKey] = useState('lx_live_demo1234567890abcdef1234567890');
@@ -92,14 +93,13 @@ export default function DashboardPage() {
       setInitialLoading(false);
     }, 400);
     return () => clearTimeout(timer);
-  }, []); // Run once on mount
+  }, []);
 
   // High-Throughput Event Ingestion Simulator
   const handleSimulateIngest = async () => {
     setSimulating(true);
     setSimulationStatus('Enqueueing full user conversion funnel journeys into Redis BullMQ queue...');
 
-    // Generate correlated user journeys through the 4 funnel steps
     const simulatedEvents: any[] = [];
     const baseTime = Date.now();
 
@@ -107,7 +107,7 @@ export default function DashboardPage() {
       const userId = `user_funnel_${Math.floor(Math.random() * 9000 + 1000)}`;
       const userTime = new Date(baseTime + i * 100).toISOString();
 
-      // Step 0: page_view (100% of users)
+      // Step 0: page_view
       simulatedEvents.push({
         eventName: 'page_view',
         userId,
@@ -115,7 +115,7 @@ export default function DashboardPage() {
         timestamp: userTime,
       });
 
-      // Step 1: add_to_cart (75% conversion rate)
+      // Step 1: add_to_cart (75% conversion)
       if (Math.random() < 0.75) {
         const step1Time = new Date(baseTime + i * 100 + 1000).toISOString();
         simulatedEvents.push({
@@ -125,7 +125,7 @@ export default function DashboardPage() {
           timestamp: step1Time,
         });
 
-        // Step 2: checkout_started (55% conversion rate)
+        // Step 2: checkout_started (70% conversion)
         if (Math.random() < 0.70) {
           const step2Time = new Date(baseTime + i * 100 + 2000).toISOString();
           simulatedEvents.push({
@@ -135,7 +135,7 @@ export default function DashboardPage() {
             timestamp: step2Time,
           });
 
-          // Step 3: payment_completed (40% conversion rate)
+          // Step 3: payment_completed (70% conversion)
           if (Math.random() < 0.70) {
             const step3Time = new Date(baseTime + i * 100 + 3000).toISOString();
             simulatedEvents.push({
@@ -199,52 +199,79 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
+    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20 relative overflow-hidden">
+      {/* Decorative Ambient Soft Lights */}
+      <div className="ambient-glow-blue top-[-100px] left-[10%]" />
+      <div className="ambient-glow-purple top-[400px] right-[5%]" />
+      <div className="ambient-glow-emerald bottom-[200px] left-[5%]" />
+
       <Navbar apiKey={apiKey} setApiKey={setApiKey} />
 
-      <main className="max-w-7xl mx-auto px-6 pt-6 space-y-6">
-        {/* Top Control Banner (Bright Light Theme) */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600">
-                <Sparkles className="w-4 h-4" />
+      <main className="max-w-7xl mx-auto px-4 lg:px-8 pt-8 space-y-6 relative z-10">
+        {/* Top Control Banner with Modern Glass Styling */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="glass-panel-light rounded-3xl p-6 lg:p-8 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border border-white/80"
+        >
+          <div className="space-y-1.5 max-w-2xl">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/20">
+                <Sparkles className="w-5 h-5" />
               </div>
-              <h2 className="text-xl font-extrabold tracking-tight text-slate-900">
+              <h2 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 font-heading">
                 LogScale Engine Control Center
               </h2>
             </div>
-            <p className="text-xs text-slate-500 font-medium">
-              Non-Blocking Ingestion API • Redis BullMQ Queue • PostgreSQL Time-Series Analytics
+            <p className="text-sm text-slate-600 font-medium pl-1">
+              High-Throughput Non-Blocking Ingestion • BullMQ Queue • Real-Time SQL Analytics
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={handleSimulateIngest}
               disabled={simulating}
-              className="flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 transition-all disabled:opacity-50"
+              className="flex-1 lg:flex-none flex items-center justify-center gap-2 text-xs font-bold px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/25 transition-all disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
-              {simulating ? 'Enqueueing...' : 'Simulate Live Event Ingestion (<20ms)'}
-            </button>
+              {simulating ? 'Enqueueing Events...' : 'Simulate Live Event Ingestion (<20ms)'}
+            </motion.button>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={refreshAll}
-              className="flex items-center justify-center gap-1.5 text-xs font-bold px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all"
+              className="flex items-center justify-center gap-2 text-xs font-bold px-4 py-3 rounded-2xl bg-white/90 hover:bg-white text-slate-700 border border-slate-200/90 shadow-sm transition-all"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <RefreshCw className="w-4 h-4 text-indigo-600" />
               Refresh Analytics
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
 
-        {simulationStatus && (
-          <div className="px-4 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-xs font-mono font-bold text-blue-800 flex items-center gap-2 shadow-sm">
-            <Activity className="w-4 h-4 text-blue-600 animate-spin" />
-            {simulationStatus}
-          </div>
-        )}
+        {/* Live Simulation Toast Notification */}
+        <AnimatePresence>
+          {simulationStatus && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.98 }}
+              className="px-4 py-3 rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200/80 text-xs font-mono font-bold text-indigo-900 flex items-center justify-between shadow-sm"
+            >
+              <div className="flex items-center gap-2.5">
+                <Activity className="w-4 h-4 text-indigo-600 animate-spin" />
+                <span>{simulationStatus}</span>
+              </div>
+              <span className="text-[11px] text-indigo-600 font-semibold bg-white/80 px-2 py-0.5 rounded-full border border-indigo-200">
+                SSE Sync Active
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* SLA & Error Budget Tracker */}
         <ErrorBudgetWidget />

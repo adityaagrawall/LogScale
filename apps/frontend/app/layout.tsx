@@ -16,7 +16,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+      </head>
+      <body className="antialiased bg-gradient-to-br from-slate-50 via-indigo-50/20 to-blue-50/40 text-slate-900 selection:bg-blue-600 selection:text-white font-sans min-h-screen">
         {children}
       </body>
     </html>
