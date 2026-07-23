@@ -11,7 +11,7 @@ import { LogExplorerWidget } from '../components/LogExplorerWidget';
 import { ErrorBudgetWidget } from '../components/ErrorBudgetWidget';
 import { IntegrationModal } from '../components/IntegrationModal';
 import { FunnelStepResult, CohortMatrixCell, SystemLatencyPercentiles } from '../types';
-import { Send, Zap, Activity, RefreshCw, Sparkles, Code2, HelpCircle } from 'lucide-react';
+import { Send, Zap, Activity, RefreshCw, Sparkles, Code2, ArrowRight, Info, Database, Gauge } from 'lucide-react';
 
 export default function DashboardPage() {
   const [apiKey, setApiKey] = useState('lx_live_demo1234567890abcdef1234567890');
@@ -203,13 +203,39 @@ export default function DashboardPage() {
       <div className="ambient-glow-purple top-[400px] right-[5%]" />
       <div className="ambient-glow-emerald bottom-[200px] left-[5%]" />
 
+      {/* Top Concept Banner: What is LogScale? */}
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white text-xs py-2.5 px-4 shadow-sm border-b border-indigo-500/30"
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5 font-medium truncate">
+            <span className="bg-white/20 text-white font-extrabold uppercase text-[10px] tracking-wider px-2.5 py-0.5 rounded-full shrink-0 shadow-2xs">
+              What is LogScale?
+            </span>
+            <span className="truncate text-blue-50">
+              LogScale is a high-throughput, non-blocking product analytics engine. It ingests thousands of events/sec in <strong className="text-white font-mono">&lt;20ms</strong> using Redis BullMQ queues & PostgreSQL time-series analytics without slowing down your app.
+            </span>
+          </div>
+          <button
+            onClick={() => setIsIntegrationOpen(true)}
+            className="hidden md:flex items-center gap-1.5 font-bold text-[11px] bg-white/15 hover:bg-white/25 px-3 py-1 rounded-full border border-white/25 shrink-0 transition-all cursor-pointer"
+          >
+            <span>Connect to your site</span>
+            <ArrowRight className="w-3.5 h-3.5 text-yellow-300" />
+          </button>
+        </div>
+      </motion.div>
+
       <Navbar 
         apiKey={apiKey} 
         setApiKey={setApiKey} 
         onOpenIntegration={() => setIsIntegrationOpen(true)}
       />
 
-      <main className="max-w-7xl mx-auto px-4 lg:px-8 pt-8 space-y-6 relative z-10">
+      <main className="max-w-7xl mx-auto px-4 lg:px-8 pt-6 space-y-6 relative z-10">
         {/* Top Control Banner */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -217,7 +243,7 @@ export default function DashboardPage() {
           transition={{ duration: 0.5 }}
           className="glass-panel-light rounded-3xl p-6 lg:p-8 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border border-white/80"
         >
-          <div className="space-y-1.5 max-w-2xl">
+          <div className="space-y-2 max-w-2xl">
             <div className="flex items-center gap-2.5">
               <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-500/20">
                 <Sparkles className="w-5 h-5" />
@@ -226,9 +252,22 @@ export default function DashboardPage() {
                 LogScale Engine Control Center
               </h2>
             </div>
-            <p className="text-sm text-slate-600 font-medium pl-1">
-              High-Throughput Non-Blocking Ingestion • BullMQ Queue • Real-Time SQL Analytics
+            <p className="text-xs lg:text-sm text-slate-600 font-medium pl-1 leading-relaxed">
+              Non-blocking event ingestion built with NestJS, Upstash Redis queues, Neon PostgreSQL time-series analytics, and real-time SSE streaming.
             </p>
+
+            {/* Quick feature pill indicators */}
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200/80">
+                <Zap className="w-3 h-3 text-blue-600" /> Ingest &lt;20ms (HTTP 202)
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-200/80">
+                <Database className="w-3 h-3 text-purple-600" /> Postgres Window Analytics
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/80">
+                <Gauge className="w-3 h-3 text-emerald-600" /> Live SSE Pipe Stream
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
@@ -294,7 +333,7 @@ export default function DashboardPage() {
         <LogExplorerWidget />
       </main>
 
-      {/* Floating Action Button (FAB) for Instant Developer Integration Guide */}
+      {/* Floating Action Button (FAB) */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
