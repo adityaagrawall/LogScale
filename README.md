@@ -88,6 +88,12 @@ flowchart TD
 - **Real-Time Live Pipe**: Server-Sent Events (SSE) stream incoming logs onto the dashboard without page refreshes.
 - **Advanced Log Explorer**: Search logs by endpoint or status code (`2XX`, `4XX`, `5XX`) and expand rows to inspect raw JSON trace metadata.
 - **SLA & Error Budget Tracker**: Real-world 99.9% Uptime availability SLA meter and error budget consumption gauge.
+### 5. 🛡️ Enterprise Security & Hardening
+- **Helmet HTTP Security Headers**: Injects headers for XSS protection, X-Frame-Options (DENY Clickjacking), and HSTS.
+- **Rate Limiting & Anti-DDoS**: Throttles API endpoints to 120 req/min per IP using `@nestjs/throttler` to block brute-force and DDoS bots.
+- **Strict Payload Body Size Limits**: Restricts JSON body payload parsing to 2MB to prevent OOM memory buffer overflow attacks.
+- **Zero-Credential Error Redaction**: Employs an `AllExceptionsFilter` that redacts database connection strings, passwords, and API keys from error outputs and stack trace logs.
+- **TLS/SSL Encryption**: Enforces encrypted TLS transport for Cloud PostgreSQL (`sslmode=require`) and Cloud Redis (`rediss://`).
 
 ---
 
