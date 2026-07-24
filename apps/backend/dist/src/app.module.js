@@ -10,6 +10,8 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const bullmq_1 = require("@nestjs/bullmq");
+const throttler_1 = require("@nestjs/throttler");
+const core_1 = require("@nestjs/core");
 const prisma_service_1 = require("./prisma/prisma.service");
 const auth_module_1 = require("./modules/auth/auth.module");
 const ingestion_module_1 = require("./modules/ingestion/ingestion.module");
@@ -60,6 +62,10 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
+            throttler_1.ThrottlerModule.forRoot([{
+                    ttl: 60000,
+                    limit: 120,
+                }]),
             bullmq_1.BullModule.forRoot({
                 connection: getRedisConnection(),
             }),
@@ -70,7 +76,13 @@ exports.AppModule = AppModule = __decorate([
             cron_module_1.CronModule,
             stream_module_1.StreamModule,
         ],
-        providers: [prisma_service_1.PrismaService],
+        providers: [
+            prisma_service_1.PrismaService,
+            {
+                provide: core_1.APP_GUARD,
+                useClass: throttler_1.ThrottlerGuard,
+            },
+        ],
         exports: [prisma_service_1.PrismaService],
     })
 ], AppModule);

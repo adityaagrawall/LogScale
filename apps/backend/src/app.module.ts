@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { PrismaService } from './prisma/prisma.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { IngestionModule } from './modules/ingestion/ingestion.module';
@@ -10,7 +12,6 @@ import { CronModule } from './modules/cron/cron.module';
 import { StreamModule } from './modules/stream/stream.module';
 
 function getRedisConnection() {
-  // Support REDIS_URL (rediss:// or redis://) as a single env var
   if (process.env.REDIS_URL) {
     const url = process.env.REDIS_URL;
     const isTls = url.startsWith('rediss://');
@@ -20,7 +21,7 @@ function getRedisConnection() {
       enableOfflineQueue: false,
       lazyConnect: true,
       retryStrategy: (times: number) => {
-        if (times > 3) return null; // stop retrying after 3 attempts
+        if (times > 3) return null;
         return Math.min(times * 200, 2000);
       },
       tls: isTls ? { rejectUnauthorized: false } : undefined,
@@ -51,6 +52,11 @@ function getRedisConnection() {
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // Rate Limiting Security: Max 120 requests per minute per IP to prevent DDoS / spam
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 120,
+    }]),
     BullModule.forRoot({
       connection: getRedisConnection(),
     }),
@@ -61,7 +67,13 @@ function getRedisConnection() {
     CronModule,
     StreamModule,
   ],
-  providers: [PrismaService],
+  providers: [
+    PrismaService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
   exports: [PrismaService],
 })
 export class AppModule {}
